@@ -5,6 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Pagepop - 나만의 안전한 코인지갑</title>
   <link rel="stylesheet" href="styles.css" />
+  <script src="https://cdn.jsdelivr.net/npm/web3@latest/dist/web3.min.js"></script>
 </head>
 <body>
   <nav>
@@ -19,6 +20,9 @@
     <div id="home" class="section">
       <h1>Pagepop - 나만의 안전한 코인지갑</h1>
       <p>Exodus, MetaMask에서 영감을 받은 Pagepop은 당신의 디지털 자산을 안전하고 스마트하게 관리해줍니다.</p>
+      <button class="btn" onclick="connectWallet()">🦊 메타마스크 지갑 연결</button>
+      <p id="walletAddress"></p>
+      <p id="walletBalance"></p>
       <div class="images">
         <img src="images/investment1.jpg" alt="지갑">
         <img src="images/investment2.jpg" alt="암호화폐">
@@ -55,5 +59,23 @@
   </div>
 
   <script src="script.js"></script>
+  <script>
+    async function connectWallet() {
+      if (window.ethereum) {
+        try {
+          const accounts = await window.ethereum.request({ method: 'eth_requestAccounts' });
+          const web3 = new Web3(window.ethereum);
+          const address = accounts[0];
+          const balance = await web3.eth.getBalance(address);
+          document.getElementById('walletAddress').innerText = `연결된 지갑 주소: ${address}`;
+          document.getElementById('walletBalance').innerText = `잔액: ${web3.utils.fromWei(balance, 'ether')} ETH`;
+        } catch (err) {
+          alert('지갑 연결 실패: ' + err.message);
+        }
+      } else {
+        alert('MetaMask를 설치해주세요.');
+      }
+    }
+  </script>
 </body>
 </html>
