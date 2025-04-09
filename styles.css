@@ -1,0 +1,88 @@
+/* styles.css */
+body {
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  margin: 0;
+  background: url('images/background.jpg') no-repeat center center fixed;
+  background-size: cover;
+  color: #f1f1f1;
+}
+nav {
+  background-color: #0c1d3c;
+  padding: 15px;
+  display: flex;
+  gap: 20px;
+  justify-content: center;
+}
+nav a {
+  color: #f1f1f1;
+  text-decoration: none;
+  font-weight: bold;
+}
+.container {
+  padding: 30px;
+  max-width: 960px;
+  margin: auto;
+  background-color: rgba(0, 0, 0, 0.7);
+  border-radius: 10px;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.4);
+}
+h1, h2 {
+  color: #00f0ff;
+}
+.hidden { display: none; }
+.images img {
+  width: 23%;
+  margin: 1%;
+  border-radius: 8px;
+  object-fit: cover;
+  height: 160px;
+  border: 1px solid #333;
+}
+.popup {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background: #222;
+  padding: 30px;
+  border: 1px solid #444;
+  display: none;
+  z-index: 1000;
+  border-radius: 10px;
+  width: 320px;
+  color: white;
+}
+.popup input {
+  margin: 10px 0;
+  width: 100%;
+  padding: 10px;
+  border-radius: 6px;
+  border: 1px solid #666;
+  background: #111;
+  color: #fff;
+}
+.btn {
+  padding: 12px 20px;
+  margin-top: 15px;
+  background-color: #00bfff;
+  border: none;
+  color: white;
+  font-weight: bold;
+  border-radius: 30px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  display: inline-block;
+}
+.btn:hover {
+  background-color: #008ecc;
+  transform: scale(1.03);
+}
+.section {
+  margin-top: 50px;
+}
+.news img {
+  width: 100%;
+  border-radius: 10px;
+  margin-bottom: 10px;
+}
+.gap { margin-top: 40px; }
