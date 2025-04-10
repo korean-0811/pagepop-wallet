@@ -1,81 +1,67 @@
-<!DOCTYPE html>
-<html lang="ko">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Pagepop - 나만의 안전한 코인지갑</title>
-  <link rel="stylesheet" href="styles.css" />
-  <script src="https://cdn.jsdelivr.net/npm/web3@latest/dist/web3.min.js"></script>
-</head>
-<body>
-  <nav>
-    <a href="#" onclick="showSection('home')">지갑</a>
-    <a href="#" onclick="showSection('about')">회사소개</a>
-    <a href="#" onclick="showSection('news')">보안 및 업데이트</a>
-    <a href="#" onclick="showSection('apply')">지갑 연동</a>
-    <a href="#" onclick="toggleLogin()">마이페이지</a>
-  </nav>
+import { useState, useEffect } from 'react';
+import { Card, CardContent } from '@/components/ui/card';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { ethers } from 'ethers';
+import { motion } from 'framer-motion';
 
-  <div class="container">
-    <div id="home" class="section">
-      <h1>Pagepop - 나만의 안전한 코인지갑</h1>
-      <p>Exodus, MetaMask에서 영감을 받은 Pagepop은 당신의 디지털 자산을 안전하고 스마트하게 관리해줍니다.</p>
-      <button class="btn" onclick="connectWallet()">🦊 메타마스크 지갑 연결</button>
-      <p id="walletAddress"></p>
-      <p id="walletBalance"></p>
-      <div class="images">
-        <img src="images/investment1.jpg" alt="지갑">
-        <img src="images/investment2.jpg" alt="암호화폐">
-        <img src="images/investment3.jpg" alt="이더리움">
-        <img src="images/investment4.jpg" alt="블록체인">
+export default function Home() {
+  const [wallet, setWallet] = useState('');
+  const [balance, setBalance] = useState('');
+  const [connected, setConnected] = useState(false);
+
+  const connectWallet = async () => {
+    if (window.ethereum) {
+      const provider = new ethers.BrowserProvider(window.ethereum);
+      const accounts = await provider.send("eth_requestAccounts", []);
+      setWallet(accounts[0]);
+      setConnected(true);
+      const bal = await provider.getBalance(accounts[0]);
+      setBalance(ethers.formatEther(bal));
+    } else {
+      alert('Metamask를 설치해주세요.');
+    }
+  };
+
+  return (
+    <div className="min-h-screen bg-black text-white p-8">
+      <motion.h1 className="text-4xl font-bold text-green-400 mb-6" initial={{ opacity: 0 }} animate={{ opacity: 1 }}>
+        PagePop Wallet
+      </motion.h1>
+
+      <Card className="max-w-md mx-auto bg-zinc-900 border border-green-600 rounded-2xl shadow-lg">
+        <CardContent className="p-6 flex flex-col gap-4">
+          <Button onClick={connectWallet} className="bg-green-500 hover:bg-green-400 text-black font-semibold">
+            {connected ? 'Connected' : 'Connect Wallet'}
+          </Button>
+          {connected && (
+            <>
+              <div className="text-sm text-zinc-400">Wallet Address:</div>
+              <div className="text-green-300 font-mono break-all">{wallet}</div>
+              <div className="text-sm text-zinc-400">ETH Balance:</div>
+              <div className="text-green-300">{balance} ETH</div>
+            </>
+          )}
+        </CardContent>
+      </Card>
+
+      <div className="mt-12 grid md:grid-cols-2 gap-6">
+        <Card className="bg-zinc-900 border border-green-600">
+          <CardContent className="p-4">
+            <h2 className="text-xl font-semibold text-green-400 mb-2">Send Token</h2>
+            <Input placeholder="Recipient Address" className="mb-2" />
+            <Input placeholder="Amount (ETH)" className="mb-2" />
+            <Button className="bg-green-500 hover:bg-green-400 text-black font-semibold">Send</Button>
+          </CardContent>
+        </Card>
+
+        <Card className="bg-zinc-900 border border-green-600">
+          <CardContent className="p-4">
+            <h2 className="text-xl font-semibold text-green-400 mb-2">NFTs</h2>
+            <p className="text-zinc-400 text-sm">지갑에 연결된 NFT를 표시합니다. (추후 구현 예정)</p>
+          </CardContent>
+        </Card>
       </div>
     </div>
-
-    <div id="about" class="section hidden">
-      <h2>Pagepop은 무엇인가요?</h2>
-      <p>AI와 보안 기술을 바탕으로 한 차세대 디지털 자산 플랫폼입니다. 사용자 맞춤 포트폴리오, 자동화 자산 관리, 안전한 백업/복구 기능 등 다양한 기능을 제공합니다.</p>
-    </div>
-
-    <div id="news" class="section hidden">
-      <h2>보안 및 최신 업데이트</h2>
-      <img src="images/investment1.jpg" alt="보안">
-      <p>생체 인증, 하드웨어 지갑 연동 등 강화된 보안 기능이 적용되었습니다.</p>
-    </div>
-
-    <div id="apply" class="section hidden">
-      <h2>지갑 연동 신청</h2>
-      <p>디스코드를 통해 고객 상담 및 자동 지갑 연동 서비스를 제공합니다.</p>
-      <a href="https://discord.com" target="_blank" class="btn">디스코드로 연결하기</a>
-    </div>
-  </div>
-
-  <div class="popup" id="loginPopup">
-    <h3>로그인</h3>
-    <input type="text" placeholder="아이디">
-    <input type="password" placeholder="비밀번호">
-    <button class="btn">로그인</button>
-    <p>아직 계정이 없으신가요? <a href="#">회원가입</a></p>
-    <button onclick="toggleLogin()" class="btn">닫기</button>
-  </div>
-
-  <script src="script.js"></script>
-  <script>
-    async function connectWallet() {
-      if (window.ethereum) {
-        try {
-          const accounts = await window.ethereum.request({ method: 'eth_requestAccounts' });
-          const web3 = new Web3(window.ethereum);
-          const address = accounts[0];
-          const balance = await web3.eth.getBalance(address);
-          document.getElementById('walletAddress').innerText = `연결된 지갑 주소: ${address}`;
-          document.getElementById('walletBalance').innerText = `잔액: ${web3.utils.fromWei(balance, 'ether')} ETH`;
-        } catch (err) {
-          alert('지갑 연결 실패: ' + err.message);
-        }
-      } else {
-        alert('MetaMask를 설치해주세요.');
-      }
-    }
-  </script>
-</body>
-</html>
+  );
+}
